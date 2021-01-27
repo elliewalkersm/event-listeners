@@ -60,3 +60,108 @@ const pies = [
     iceCream: 'none',
   },
 ];
+
+const printToDom = (divId, textToPrint) => {
+  const selectedDiv = document.querySelector(divId);
+  selectedDiv.innerHTML = textToPrint;
+}
+
+const pieBuilder = (taco) => {
+  let domString = ' ';
+
+  for (let i = 0; i < taco.length; i++) {
+    domString += `<div class="card my-2" style="width: 18rem;" id=${i}>
+    <div class="img-container" style="background-image: url('${taco[i].imageUrl}');"></div>
+    <div class="card-body">
+      <p class="card-text">${taco[i].name}</p>
+      <p class="card-text">${taco[i].ingredients}</p>
+      <p class="card-text">${taco[i].bakeTemp}</p>
+      <p class="card-text">${taco[i].drinkPairing}</p>
+      <p class="card-text">${taco[i].iceCream}</p>
+      <button type="button" class="btn btn-danger" id="${i}">Delete</button>
+    </div>
+  </div>`;
+  }
+
+  printToDom('#pies', domString);
+}
+
+const handleButtonClick = (e) => {
+  const buttonId = e.target.id;
+
+  if (buttonId === 'Trinity') {
+    //Dark mode
+    document.querySelector('body').style.backgroundColor = '#000';
+  } else if (buttonId === 'Doc') {
+    //light mode
+    document.querySelector('body').style.backgroundColor = '#FFF';
+  } else if (buttonId === 'Aja') {
+    //medium mode
+    document.querySelector('body').style.backgroundColor = '#808080';
+  } else if (buttonId === 'All') {
+    //default
+    document.querySelector('body').style.backgroundColor = '175, 196, 175';
+  }
+
+  //Update Pies Based on Button Click
+  const selectedPies = [];
+  for (let i = 0; i < pies.length; i++) {
+    if(pies[i].instructor === buttonId) {
+      selectedPies.push(pies[i]);
+    }
+  }
+  if (buttonId === 'All') {
+    pieBuilder(pies);
+  } else {
+    pieBuilder(selectedPies);
+  }
+}
+
+//C in CRUD: Create New Pies
+const getFormInfo = (e) => {
+  //Stop the page from refreshing
+  e.preventDefault();
+  const name = document.querySelector('#name').value;
+  const ingredients = document.querySelector('#ingredients').value;
+  const bakeTemp = document.querySelector('#bakeTemp').value;
+  const drinkPairing = document.querySelector('#drinkPairing').value;
+  const imageUrl = document.querySelector('#imageUrl').value;
+  const instructor = document.querySelector('#instructor').value;
+  const iceCream = document.querySelector('#iceCream').value;
+
+  //short hand object notation
+  const obj = {
+    name,
+    bakeTemp,
+    ingredients,
+    drinkPairing,
+    imageUrl,
+    instructor,
+    iceCream,
+  }
+
+  //pushing new object up to pies array
+  pies.push(obj);
+
+  //rebuilding the dom
+  pieBuilder(pies);
+
+  //clear data from form on submit click
+  document.querySelector('form').reset();
+}
+
+const buttonEvents = () => {
+  document.querySelector('#All').addEventListener('click', handleButtonClick);
+  document.querySelector('#Doc').addEventListener('click', handleButtonClick);
+  document.querySelector('#Aja').addEventListener('click', handleButtonClick);
+  document.querySelector('#Trinity').addEventListener('click', handleButtonClick);
+  document.querySelector('form').addEventListener('submit', getFormInfo);
+  }
+
+
+const init = () => {
+  buttonEvents();
+  pieBuilder(pies);
+}
+
+init();
